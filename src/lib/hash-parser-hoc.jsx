@@ -38,7 +38,8 @@ const HashParserHOC = function (WrappedComponent) {
         }
         handleHashChange () {
             const hashMatch = window.location.hash.match(/#(\d+)/);
-            const hashProjectId = hashMatch === null ? defaultProjectId : hashMatch[1];
+            // FIXME: this change is temporary
+            const hashProjectId = hashMatch === null ? '1' : hashMatch[1];
             this.props.setProjectId(hashProjectId.toString());
         }
         render () {
