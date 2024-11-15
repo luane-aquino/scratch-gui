@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {compose} from 'redux';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
 import AppStateHOC from '../lib/app-state-hoc.jsx';
 import GUI from '../containers/gui.jsx';
@@ -61,25 +62,43 @@ export default appTarget => {
         window.onbeforeunload = () => true;
     }
 
+    const mockId = '1'
+
     ReactDOM.render(
-        // important: this is checking whether `simulateScratchDesktop` is truthy, not just defined!
-        simulateScratchDesktop ?
-            <WrappedGui
-                canEditTitle
-                isScratchDesktop
-                showTelemetryModal
-                canSave={false}
-                onTelemetryModalCancel={handleTelemetryModalCancel}
-                onTelemetryModalOptIn={handleTelemetryModalOptIn}
-                onTelemetryModalOptOut={handleTelemetryModalOptOut}
-            /> :
-            <WrappedGui
-                canEditTitle
-                backpackVisible
-                showComingSoon
-                backpackHost={backpackHost}
-                canSave={false}
-                onClickLogo={onClickLogo}
-            />,
+        <Router>
+            <Switch>
+                <Route exact path="/">
+                    <Redirect to={`/projects/${mockId}`} />
+                </Route>
+
+                <Route path="/projects/:id">
+                    {simulateScratchDesktop ? (
+                            <WrappedGui
+                                canEditTitle
+                                isScratchDesktop
+                                showTelemetryModal
+                                canSave={false}
+                                onTelemetryModalCancel={handleTelemetryModalCancel}
+                                onTelemetryModalOptIn={handleTelemetryModalOptIn}
+                                onTelemetryModalOptOut={handleTelemetryModalOptOut}
+                            />
+                        ) : (
+                            <WrappedGui
+                                canEditTitle
+                                backpackVisible
+                                showComingSoon
+                                backpackHost={backpackHost}
+                                canSave={false}
+                                onClickLogo={onClickLogo}
+                            />
+                        )}
+                </Route>
+
+
+                <Route path="*">
+                    <div>Not found 🧐</div>
+                </Route>
+            </Switch>
+        </Router>,
         appTarget);
 };
